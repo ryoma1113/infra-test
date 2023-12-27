@@ -1,2 +1,40 @@
 # nginx
 # node npm
+
+version: '3'
+services:
+    candidate-page-web:
+        build:
+            context: .
+            dockerfile: ./docker/pnpm/Dockerfile
+        volumes:
+            - type: bind
+              source: ./cxc-pfc-front
+              target: /candidate-page
+            - 'pfc-node-modules-volum:/candidate-page/node_modules'
+        command: sh -c "pnpm dev"
+        ports:
+            - 3000:3000
+        # tty: true
+        networks:
+            - local-development-net
+        environment:
+            ENV_TEST: ${ENV_TEST:-local_dev}
+    # candidate-page-nginx:
+    #     build:
+    #         context: .
+    #         dockerfile: ./docker/nginx/Dockerfile
+    #     ports:
+    #         - 3000:3000
+    #     volumes:
+    #         - type: bind
+    #           source: ./cxc-pfc-front
+    #           target: /candidate-page
+    #         # exclude directory
+    #         - /candidate-page/node_modules # 除外する
+    #     networks:
+    #         - local-development-net
+    #     environment:
+    #         ENV_TEST_1: ${ENV_TEST:-local_dev_1}
+volumes:
+    pfc-node-modules-volum:
